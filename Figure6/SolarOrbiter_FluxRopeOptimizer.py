@@ -176,7 +176,7 @@ results=minimize(loss,x_0,bounds=[(np.min(longitudes_index),np.max(longitudes_in
 
 solar_orbiter_lon_index=np.where(np.abs(solar_orbiter_lon-longitudes)==np.min(np.abs(solar_orbiter_lon-longitudes)))[0][0]
 solar_orbiter_lat_index=np.where(np.abs(latitudes-solar_orbiter_lat)==np.min(np.abs(latitudes-solar_orbiter_lat)))[0][0]
-results_all=[]
+'''results_all=[]
 loss_all=[]
 its=np.arange(200.,400.,50.)
 #its=np.arange(400.,800.,50.)
@@ -207,20 +207,20 @@ amp0=iamps[iii]
 print(so_lon0,tstart0,amp0)
 
 loss_all=np.array(loss_all)
-results=results_all[iii]
+results=results_all[iii]'''
 
 ###shiyan
-x_0=np.array([188.,solar_orbiter_lat_index,328.,1.79])#,1.])
-results=minimize(loss,x_0,bounds=[(np.min(longitudes_index),np.max(longitudes_index)),(np.min(latitudes_index),np.max(latitudes_index)),(0,800),(1,4)])
+#x_0=np.array([188.,solar_orbiter_lat_index,328.,1.79])#,1.])
+#results=minimize(loss,x_0,bounds=[(np.min(longitudes_index),np.max(longitudes_index)),(np.min(latitudes_index),np.max(latitudes_index)),(0,800),(1,4)])
 
 
-print('lon_index:',longitudes[int(results.x[0])],'lat_index:',latitudes[int(results.x[1])])#latitudes[int(results.x[1])])
-paras=results.x#here, the best-fit results.x=(188.53,408.91,328.5,1.78)
+#print('lon:',longitudes[int(results.x[0])],'lat:',latitudes[int(results.x[1])])#latitudes[int(results.x[1])])
+paras=(188.53,408.91,328.5,1.78)
 fun=loss(paras)#results.x)
 
 
-cdf_21 = cdflib.CDF("solo_L2_mag-rtn-normal-1-minute_20230321_V01.cdf")
-cdf_22 = cdflib.CDF("solo_L2_mag-rtn-normal-1-minute_20230322_V01.cdf")
+cdf_21 = cdflib.CDF("/Users/twinwilling/Downloads/solar orbiter/solo_L2_mag-rtn-normal-1-minute_20230321_V01.cdf")
+cdf_22 = cdflib.CDF("/Users/twinwilling/Downloads/solar orbiter/solo_L2_mag-rtn-normal-1-minute_20230322_V01.cdf")
 epoch_time21=cdf_21.varget("EPOCH")
 epoch_time22=cdf_22.varget("EPOCH")
 epoch_time=np.append(epoch_time21,epoch_time22)
@@ -259,9 +259,40 @@ plt.close()
 #plt.grid(True)
 #plt.show()
 #print(results)
+'''ts=np.arange(0,800,10)
+amps=np.arange(0.5,2.5,0.05)
+losses=np.zeros([len(longitudes),len(latitudes)])
+t_mat=np.zeros([len(longitudes),len(latitudes)])
+amp_mat=np.zeros([len(longitudes),len(latitudes)])
+for i in range(len(longitudes)):
+    for j in range(len(latitudes)):
+        loss_i=np.zeros([len(ts),len(amps)])
+        for t_i in range(len(ts)):
+            for amp_i in range(len(amps)):
+                loss_i[t_i,amp_i]=loss((i,j,t_i,amp_i))
+        losses[i,j]=np.min(loss_i)
+        where_t=np.where(loss_i==np.min(loss_i))[0][0]
+        where_a=np.where(loss_i==np.min(loss_i))[1][0]
+        t_mat[i,j]=ts[where_t]
+        amp_mat[i,j]=amps[where_a]
+        print(np.min(loss_i))
+gogogo
+
+xlon=195
+ylat=73
+loss_min=loss((xlon,ylat,t_mat[xlon,ylat],amp_mat[xlon,ylat]))
+print('lon:',longitudes[195],'lat:',latitudes[73])
+plt.plot(bn_exp,color='red')
+plt.plot(br_exp,color='blue')
+plt.plot(bt_exp,color='green')
+plt.plot(so_bn_i,color='red')
+plt.plot(so_br_i,color='blue')
+plt.plot(so_bt_i,color='green')
+plt.grid(True)
+plt.show()'''
 
 t_start_e=int(1900-260)
-file=np.loadtxt('OMNI_HRO2_1MIN_2074319.csv',dtype=str)
+file=np.loadtxt('/Users/twinwilling/Downloads/风暴/OMNI_HRO2_1MIN_2074319.csv',dtype=str)
 data=np.array([i.split(',') for i in file])
 print(data[0])
 data=data[1:]
@@ -319,9 +350,10 @@ plt.plot(bzs,'r:')
 plt.grid(True)
 plt.show()
 
-gamma=0.75
+gamma=1.0
 tau=7.7*60.*60.
 
+vsw_so=420
 #time=data[:,0][:7200][t_start_e:]
 #n=data[:,6+2].astype(float)[:7200][t_start_e:]
 #pressure_kinetic=data[:,8+2].astype(float)[:7200][t_start_e:]#n*vsw_so**2*1e-2

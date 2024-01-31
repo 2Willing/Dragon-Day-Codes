@@ -296,6 +296,7 @@ bz_gsm = gsm_coords.data[:,2]
 bxs=[]
 bys=[]
 bzs=[]
+vsws=[]
 for i in range(len(bz_gsm)):
     time_i=int(i*dt_e/60.)
     if bx_gsm_fact[time_i]>900:
@@ -306,6 +307,10 @@ for i in range(len(bz_gsm)):
         bxs.append(bx_gsm_fact[time_i])
         bys.append(by_gsm_fact[time_i])
         bzs.append(bz_gsm_fact[time_i])
+'''    if v_sw[time_i]>900:
+        vsws.append(np.nan)
+    else:
+        vsws.append(v_sw[time_i])'''
 plt.plot(bx_gsm,color='blue')
 plt.plot(bxs,'b:')
 plt.plot(by_gsm,color='green')
@@ -315,7 +320,7 @@ plt.plot(bzs,'r:')
 plt.grid(True)
 plt.show()
 
-gamma=0.75
+gamma=1#0.75
 tau=7.7*60.*60.
 
 #time=data[:,0][:7200][t_start_e:]
@@ -323,15 +328,15 @@ tau=7.7*60.*60.
 #pressure_kinetic=data[:,8+2].astype(float)[:7200][t_start_e:]#n*vsw_so**2*1e-2
 sym_h_fact=data[:,12+2].astype(float)[:7200][t_start_e:]
 bz_gsm_fact=data[:,4+2].astype(float)[:7200][t_start_e:]
+v_sw=data[:,5+2].astype(float)[:7200][t_start_e:]
+n=data[:,6+2].astype(float)[:7200][t_start_e:]
 bz_gsm=bz_gsm_fact
 dt_e=60
-Ey=-(vsw_so*1e3)*(bz_gsm*1e-9)*1e3#mV
+Ey=-(v_sw*1e3)*(bz_gsm*1e-9)*1e3#mV
 sym_h=np.zeros(len(bz_gsm))
 sym_h_stars=np.zeros(len(bz_gsm))
-n_so=60
-n_e=n_so/(Au2Rs/solar_orbiter_dis)**(2)
-pressure_kinetic=((1.67e-27*n_e)*(vsw_so*1e3)**2)/1.6e-19#eV/cm^3
-sym_h_star_0=0-0.2*gamma*pressure_kinetic**(1/2)+20*gamma
+pressure_kinetic=((1.67e-27*n)*(vsw_so*1e5)**2)/1e4/1.6e-19#eV/cm^3
+sym_h_star_0=0-0.2*gamma*pressure_kinetic[0]**(1/2)+20*gamma
 sym_h_stars[0]=sym_h_star_0
 sym_h_fact_array=np.zeros(len(bz_gsm))
 bz_gsm_fact_array=np.zeros(len(bz_gsm))
@@ -345,13 +350,19 @@ for i in range(1,len(bz_gsm)):
     #else:
     #    bz_gsm_last=bz_gsm[i]
     Ey_i=Ey[i]
+    if pressure_kinetic[i]<1e6:
+        last_pressure=pressure_kinetic[i]
+        last_ey=Ey_i
+    else:
+        pressure_kinetic[i]=last_pressure
+        Ey_i=last_ey
     if Ey_i>=0.5:
         Qe=-1.5e-3*gamma*(Ey_i-0.5)
         sym_h_stars[i]=sym_h_stars[i-1]+(Qe-sym_h_stars[i-1]/tau)*dt_e
     else:
         Qe=0
         sym_h_stars[i]=sym_h_stars[i-1]+(Qe-sym_h_stars[i-1]/tau)*dt_e
-    sym_h[i]=sym_h_stars[i]+0.2*gamma*pressure_kinetic**(1/2)-20*gamma#pressure_i**(1/2)-20
+    sym_h[i]=sym_h_stars[i]+0.2*gamma*pressure_kinetic[i]**(1/2)-20*gamma#pressure_i**(1/2)-20
     sym_h_fact_array[i]=sym_h_fact[time_i]
     if bz_gsm_fact[time_i]<999:
         bz_gsm_fact_array[i]=bz_gsm_fact[time_i]
