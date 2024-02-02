@@ -176,7 +176,7 @@ results=minimize(loss,x_0,bounds=[(np.min(longitudes_index),np.max(longitudes_in
 
 solar_orbiter_lon_index=np.where(np.abs(solar_orbiter_lon-longitudes)==np.min(np.abs(solar_orbiter_lon-longitudes)))[0][0]
 solar_orbiter_lat_index=np.where(np.abs(latitudes-solar_orbiter_lat)==np.min(np.abs(latitudes-solar_orbiter_lat)))[0][0]
-'''results_all=[]
+results_all=[]
 loss_all=[]
 its=np.arange(200.,400.,50.)
 #its=np.arange(400.,800.,50.)
@@ -207,7 +207,7 @@ amp0=iamps[iii]
 print(so_lon0,tstart0,amp0)
 
 loss_all=np.array(loss_all)
-results=results_all[iii]'''
+results=results_all[iii]
 
 ###shiyan
 #x_0=np.array([188.,solar_orbiter_lat_index,328.,1.79])#,1.])
