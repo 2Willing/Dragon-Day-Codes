@@ -215,7 +215,7 @@ results=results_all[iii]
 
 
 #print('lon:',longitudes[int(results.x[0])],'lat:',latitudes[int(results.x[1])])#latitudes[int(results.x[1])])
-paras=(188.53,408.91,328.5,1.78)
+paras=results#(188.53,408.91,328.5,1.78)
 fun=loss(paras)#results.x)
 
 
