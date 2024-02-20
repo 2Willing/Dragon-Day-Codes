@@ -12,3 +12,4 @@ The codes under this directory are used to generate the panels in Figure 5.
 
 To generate the panel (h), one should replace the '__init__.py' in the local SolarMACH installation directory with the '__init__.py' presented in this directory, and run 'solarmach_0321.py'
 
+'draw_solar_orbiter_parameters.py' uses the Solar Orbiter data files presented in this directory to generate panels (i), (j).
